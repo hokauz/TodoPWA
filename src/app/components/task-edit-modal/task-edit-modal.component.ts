@@ -13,7 +13,7 @@ export class TaskEditModalComponent implements OnInit {
   task: Task;
   ios: boolean;
   toCreate: boolean;
-
+  editable: boolean;
   constructor(private modalCtrl: ModalController, private config: Config, private navParams: NavParams) {}
 
   ngOnInit() {
@@ -22,6 +22,7 @@ export class TaskEditModalComponent implements OnInit {
 
   ionViewWillEnter() {
     this.ios = this.config.get('mode') === `ios`;
+    this.editable = this.navParams.get('editable');
     this.task.order = this.navParams.get('len') || 0;
 
     if (this.navParams.get('task')) {

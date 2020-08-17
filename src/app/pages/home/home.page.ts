@@ -46,7 +46,6 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   private create(task: Task) {
-    debugger;
     this.service.create(task);
     this.utils.presentToast('Tarefa adicionada.');
   }
@@ -80,7 +79,7 @@ export class HomePage implements OnInit, OnDestroy {
       component: TaskEditModalComponent,
       swipeToClose: true,
       presentingElement: this.routerOutlet.nativeEl,
-      componentProps: { task, len },
+      componentProps: { task, len, editable: true },
     });
     await modal.present();
     const { data } = await modal.onWillDismiss();

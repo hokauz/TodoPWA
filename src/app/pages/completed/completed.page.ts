@@ -70,7 +70,7 @@ export class CompletedPage implements OnInit {
       component: TaskEditModalComponent,
       swipeToClose: true,
       presentingElement: this.routerOutlet.nativeEl,
-      componentProps: { task, len },
+      componentProps: { task, len, editable: false },
     });
     await modal.present();
     const { data } = await modal.onWillDismiss();
