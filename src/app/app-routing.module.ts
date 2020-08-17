@@ -6,19 +6,14 @@ const routes: Routes = [
     path: 'home',
     loadChildren: () => import('./pages/home/home.module').then((m) => m.HomePageModule),
   },
-
   {
-    path: 'not-found',
-    loadChildren: () => import('./pages/not-found/not-found.module').then((m) => m.NotFoundPageModule),
+    path: 'completed',
+    loadChildren: () => import('./pages/completed/completed.module').then((m) => m.CompletedPageModule),
   },
   {
     path: '',
     redirectTo: 'home',
     pathMatch: 'full',
-  },
-  {
-    path: '**',
-    redirectTo: 'not-found',
   },
 ];
 

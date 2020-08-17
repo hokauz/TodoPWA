@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { Observable } from 'rxjs';
-
 import { TaskRepositoryContract } from './task.contracts';
 import { Task } from '../entity';
 
@@ -14,28 +12,24 @@ import { Task } from '../entity';
 @Injectable({
   providedIn: 'root',
 })
-export class TaskRepository implements TaskRepositoryContract {
+export class TaskRepositoryApi implements TaskRepositoryContract {
   private path = 'https://todo-backend-golang.herokuapp.com/todos';
 
   constructor(private http: HttpClient) {}
 
-  getAll(): Observable<Task[]> {
-    return this.http.get<any>(this.path);
+  get(): Promise<Task[]> {
+    return this.http.get<any>(this.path).toPromise();
   }
 
-  get(url: string): Observable<Task> {
-    return this.http.get<any>(url);
+  post(task: Task): Promise<Task> {
+    return this.http.post<any>(this.path, task).toPromise();
   }
 
-  post(task: Task): Observable<Task> {
-    return this.http.post<any>(task.url, task);
+  put(task: Task): Promise<Task> {
+    return this.http.put<any>(task.url, task).toPromise();
   }
 
-  put(task: Task): Observable<Task> {
-    return this.http.put<any>(task.url, task);
-  }
-
-  delete(url: string): Observable<undefined> {
-    return this.http.delete<any>(url);
+  delete(target: string): Promise<undefined> {
+    return this.http.delete<any>(target).toPromise();
   }
 }

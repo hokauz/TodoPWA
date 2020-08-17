@@ -1,4 +1,3 @@
-import { Observable } from 'rxjs';
 import { Task } from '../entity';
 
 /**
@@ -11,9 +10,8 @@ import { Task } from '../entity';
  * @interface TaskRepositoryContract
  */
 export interface TaskRepositoryContract {
-  get(url: string): Observable<Task>;
-  getAll(): Observable<Task[]>;
-  post(task: Task): Observable<Task>;
-  put(task: Task): Observable<Task>;
-  delete(url: string): Observable<undefined>;
+  get(url?: string): Promise<Task[]>;
+  post(task: Task): Promise<Task>;
+  put(task: Task): Promise<Task>;
+  delete(target: string): Promise<undefined>;
 }

@@ -1,0 +1,27 @@
+<ion-content class="ion-padding" fullscreen="true">
+  <ion-toolbar class="trans">
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()" strong>
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <div class="container">
+    <ion-item lines="none">
+      <ion-input [(ngModel)]="task.title" placeholder="Adicione uma tarefa" (keyup.enter)="save()"></ion-input>
+    </ion-item>
+    <ion-item lines="none" *ngIf="!toCreate">
+      <ion-icon slot="end" size="small" color="danger" name="trash-outline" (click)="delete()"></ion-icon>
+    </ion-item>
+  </div>
+</ion-content>
+
+<ion-footer lines="none">
+  <ion-toolbar class="trans">
+    <ion-buttons slot="end">
+      <ion-button (click)="save()" strong>
+        Salvar
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>

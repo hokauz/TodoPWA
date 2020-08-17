@@ -1,24 +1,25 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ModalController, IonRouterOutlet } from '@ionic/angular';
+import { Component, OnInit } from '@angular/core';
+import { IonRouterOutlet, ModalController } from '@ionic/angular';
+import { SubSink } from 'subsink';
 
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { Task } from 'src/app/core/entity';
+import { TaskAction, TaskActions } from 'src/app/components/task/task.component';
 
 import { TaskService } from 'src/app/core/task/task.service';
 import { UtilsService } from 'src/app/services/utils/utils.service';
-
-import { TaskAction, TaskActions } from 'src/app/components/task/task.component';
 import { TaskEditModalComponent } from 'src/app/components/task-edit-modal/task-edit-modal.component';
 
 @Component({
-  selector: 'app-home',
-  templateUrl: 'home.page.html',
-  styleUrls: ['home.page.scss'],
+  selector: 'app-completed',
+  templateUrl: './completed.page.html',
+  styleUrls: ['./completed.page.scss'],
 })
-export class HomePage implements OnInit, OnDestroy {
+export class CompletedPage implements OnInit {
   tasks$: Observable<Task[]>;
+  subs$: SubSink;
 
   constructor(
     private service: TaskService,
@@ -28,27 +29,16 @@ export class HomePage implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.subs$ = new SubSink();
     this.read();
   }
 
-  ngOnDestroy() {}
+  ngOnDestroy() {
+    this.subs$.unsubscribe();
+  }
 
   private read() {
-    this.tasks$ = this.service.get().pipe(map((list) => list.filter((l) => !l.completed)));
-  }
-
-  add(len: number) {
-    this.showModal(undefined, len);
-  }
-
-  view(action: TaskAction, len: number) {
-    this.showModal(action.task, len);
-  }
-
-  private create(task: Task) {
-    debugger;
-    this.service.create(task);
-    this.utils.presentToast('Tarefa adicionada.');
+    this.tasks$ = this.service.get().pipe(map((list) => list.filter((l) => l.completed)));
   }
 
   private update(task: Task) {
@@ -61,11 +51,11 @@ export class HomePage implements OnInit, OnDestroy {
     this.utils.presentToast('Tarefa removida.');
   }
 
-  handlerAction(action: TaskAction) {
-    if (action.type === TaskActions.CREATE) {
-      return this.create(action.task);
-    }
+  view(action: TaskAction, len: number) {
+    this.showModal(action.task, len);
+  }
 
+  handlerAction(action: TaskAction) {
     if (action.type === TaskActions.UPDATE) {
       return this.update(action.task);
     }

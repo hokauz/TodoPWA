@@ -5,7 +5,7 @@
     </ion-buttons>
 
     <ion-title>
-      Minhas tarefas
+      Terefas completadas
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -14,23 +14,12 @@
   <div class="container">
     <ng-container *ngIf="tasks$ | async as list">
       <div *ngIf="list && list.length; else empty">
-        <task
-          *ngFor="let task of list"
-          [task]="task"
-          (action)="handlerAction($event)"
-          (view)="view($event, list.length)"
-        ></task>
+        <task *ngFor="let task of list" [task]="task" (view)="view($event, list.length)"></task>
       </div>
 
       <ng-template #empty>
         <p>Vazio</p>
       </ng-template>
-
-      <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-        <ion-fab-button size="small" (click)="add(list.length)">
-          <ion-icon name="add"></ion-icon>
-        </ion-fab-button>
-      </ion-fab>
     </ng-container>
   </div>
 </ion-content>

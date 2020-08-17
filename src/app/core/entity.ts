@@ -19,10 +19,28 @@ export class ResponseBuider {
   }
 }
 
-export interface Task {
+export class Task {
+  id?: string;
   title: string;
-  order: number | null;
+  order: number;
   completed?: boolean;
   url?: string;
   text?: string;
+  location?: string;
+
+  constructor(title: string, order: number, completed: boolean = false) {
+    this.title = title || '';
+    this.order = order;
+    this.completed = completed;
+  }
+}
+
+export function toAPI(task: Task): Task {
+  return {
+    title: task.title,
+    order: task.order,
+    completed: task.completed,
+    url: task.url,
+    text: task.text,
+  };
 }
