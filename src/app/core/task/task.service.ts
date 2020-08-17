@@ -24,6 +24,7 @@ export class TaskService {
   async create(task: Task) {
     const data = await this.repoLocal.post(task);
     this.list.next(data);
+
     this.repoAPI.post(toAPI(task)).then(async (res) => {
       if (res) {
         task.url = res.url;
@@ -36,6 +37,7 @@ export class TaskService {
   async update(task: Task) {
     const data = await this.repoLocal.put(task);
     this.list.next(data);
+
     if (task.url) {
       this.repoAPI.put(toAPI(task));
     }
@@ -48,5 +50,20 @@ export class TaskService {
     if (task.url) {
       this.repoAPI.delete(task.url);
     }
+  }
+
+  clearCompleted() {
+    const list = this.list.value;
+    const not = list.filter((l) => !l.completed);
+    const completed = list.filter((l) => l.completed);
+
+    this.repoLocal.set(completed);
+    this.list.next(not);
+
+    not.forEach((task) => {
+      if (task.url) {
+        this.repoAPI.delete(task.url);
+      }
+    });
   }
 }

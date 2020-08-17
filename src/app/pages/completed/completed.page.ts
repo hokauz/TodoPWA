@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { IonRouterOutlet, ModalController } from '@ionic/angular';
-import { SubSink } from 'subsink';
 
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 
 import { Task } from 'src/app/core/entity';
 import { TaskAction, TaskActions } from 'src/app/components/task/task.component';
@@ -19,8 +18,7 @@ import { TaskEditModalComponent } from 'src/app/components/task-edit-modal/task-
 })
 export class CompletedPage implements OnInit {
   tasks$: Observable<Task[]>;
-  subs$: SubSink;
-
+  hasContent: boolean;
   constructor(
     private service: TaskService,
     private utils: UtilsService,
@@ -29,21 +27,16 @@ export class CompletedPage implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.subs$ = new SubSink();
     this.read();
   }
 
-  ngOnDestroy() {
-    this.subs$.unsubscribe();
-  }
+  ngOnDestroy() {}
 
   private read() {
-    this.tasks$ = this.service.get().pipe(map((list) => list.filter((l) => l.completed)));
-  }
-
-  private update(task: Task) {
-    this.service.update(task);
-    this.utils.presentToast('Tarefa atualizada.');
+    this.tasks$ = this.service.get().pipe(
+      map((list) => list.filter((l) => l.completed)),
+      tap((list) => (this.hasContent = !!list.length))
+    );
   }
 
   private delete(task: Task) {
@@ -55,11 +48,12 @@ export class CompletedPage implements OnInit {
     this.showModal(action.task, len);
   }
 
-  handlerAction(action: TaskAction) {
-    if (action.type === TaskActions.UPDATE) {
-      return this.update(action.task);
-    }
+  clear() {
+    this.service.clearCompleted();
+    this.utils.presentToast('Lista de tarefas realizadas foi limpa');
+  }
 
+  handlerAction(action: TaskAction) {
     if (action.type === TaskActions.DELETE) {
       return this.delete(action.task);
     }

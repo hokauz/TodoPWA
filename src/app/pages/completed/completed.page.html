@@ -7,6 +7,12 @@
     <ion-title>
       Terefas completadas
     </ion-title>
+
+    <ion-buttons slot="end" *ngIf="hasContent">
+      <ion-button (click)="clear()" strong>
+        Limpar
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 

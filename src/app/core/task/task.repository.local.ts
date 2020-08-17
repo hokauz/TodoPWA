@@ -14,6 +14,11 @@ export class TaskRepositoryLocal {
 
   constructor(private storage: StorageService) {}
 
+  set(tasks: Task[]) {
+    this.list = tasks;
+    this.save();
+  }
+
   async get(): Promise<Task[]> {
     this.list = (await this.storage.get<Task[]>(this.key)) || [];
     return this.list;
@@ -40,7 +45,6 @@ export class TaskRepositoryLocal {
   }
 
   private save() {
-    console.log(this.list);
     this.storage.set(this.key, this.list);
   }
 }
