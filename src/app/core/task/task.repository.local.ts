@@ -5,6 +5,11 @@ import { StorageService } from 'src/app/services/storage/storage.service';
 
 import { Task } from '../entity';
 
+export interface TaskLocalResponse {
+  list: Task[];
+  task: Task;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -24,17 +29,20 @@ export class TaskRepositoryLocal {
     return this.list;
   }
 
-  async post(task: Task): Promise<Task[]> {
+  async post(task: Task): Promise<TaskLocalResponse> {
     const t = { ...task, id: uuidv4() };
     this.list.push(t);
     this.save();
-    return this.list;
+    return { list: this.list, task: t };
   }
 
   async put(task: Task): Promise<Task[]> {
     const i = this.list.findIndex((t) => t.id === task.id);
-    this.list[i] = task;
-    this.save();
+
+    if (i !== null && i !== undefined) {
+      this.list[i] = { ...this.list[i], ...task };
+      this.save();
+    }
     return this.list;
   }
 

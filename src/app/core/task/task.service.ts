@@ -4,13 +4,18 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { Task, toAPI } from '../entity';
 import { TaskRepositoryApi } from './task.repository.api';
 import { TaskRepositoryLocal } from './task.repository.local';
+import { GeolocationService } from 'src/app/services/geolocation/geolocation.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TaskService {
   private list = new BehaviorSubject<Task[]>([]);
-  constructor(private repoAPI: TaskRepositoryApi, private repoLocal: TaskRepositoryLocal) {}
+  constructor(
+    private repoAPI: TaskRepositoryApi,
+    private repoLocal: TaskRepositoryLocal,
+    private geoServ: GeolocationService
+  ) {}
 
   async load() {
     const data = await this.repoLocal.get();
@@ -22,13 +27,18 @@ export class TaskService {
   }
 
   async create(task: Task) {
-    const data = await this.repoLocal.post(task);
-    this.list.next(data);
+    let t = { ...task };
+    const data = await this.repoLocal.post(t);
 
-    this.repoAPI.post(toAPI(task)).then(async (res) => {
+    this.list.next(data.list);
+    t = data.task;
+
+    t.location = await this.geoServ.getCity();
+
+    await this.repoAPI.post(toAPI(t)).then(async (res) => {
       if (res) {
-        task.url = res.url;
-        const data = await this.repoLocal.put(task);
+        t.url = res.url;
+        const data = await this.repoLocal.put(t);
         this.list.next(data);
       }
     });
@@ -39,7 +49,7 @@ export class TaskService {
     this.list.next(data);
 
     if (task.url) {
-      this.repoAPI.put(toAPI(task));
+      await this.repoAPI.put(toAPI(task));
     }
   }
 
@@ -48,7 +58,7 @@ export class TaskService {
     this.list.next(data);
 
     if (task.url) {
-      this.repoAPI.delete(task.url);
+      await this.repoAPI.delete(task.url);
     }
   }
 
@@ -60,9 +70,9 @@ export class TaskService {
     this.repoLocal.set(completed);
     this.list.next(not);
 
-    not.forEach((task) => {
+    not.forEach(async (task) => {
       if (task.url) {
-        this.repoAPI.delete(task.url);
+        await this.repoAPI.delete(task.url);
       }
     });
   }

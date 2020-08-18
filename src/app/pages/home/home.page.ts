@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ModalController, IonRouterOutlet } from '@ionic/angular';
 
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 
 import { Task } from 'src/app/core/entity';
 
@@ -34,7 +34,10 @@ export class HomePage implements OnInit, OnDestroy {
   ngOnDestroy() {}
 
   private read() {
-    this.tasks$ = this.service.get().pipe(map((list) => list.filter((l) => !l.completed)));
+    this.tasks$ = this.service.get().pipe(
+      map((list) => list.filter((l) => !l.completed))
+      // tap(console.log)
+    );
   }
 
   add(len: number) {
@@ -52,7 +55,8 @@ export class HomePage implements OnInit, OnDestroy {
 
   private update(task: Task) {
     this.service.update(task);
-    this.utils.presentToast('Tarefa atualizada.');
+    const msg = task.completed ? 'Tarefa atualizada.' : 'Tarefa completada.';
+    this.utils.presentToast(msg);
   }
 
   private delete(task: Task) {

@@ -1,0 +1,22 @@
+.task-item {
+  border-bottom: 0.5px solid rgba(255, 255, 255, 0.2);
+  min-height: 50px;
+}
+
+.task-content {
+  padding-left: 6px;
+}
+
+.task-check {
+  font-size: 25px !important;
+}
+
+.task-title {
+  padding-left: 2px !important;
+}
+
+.task-badge {
+  --padding-start: 0 !important;
+  margin: 0;
+  font-size: 12px;
+}

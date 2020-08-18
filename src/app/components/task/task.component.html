@@ -1,7 +1,29 @@
-<!-- <ion-card> -->
-<ion-item detail (click)="open()">
-  <ion-icon name="ellipse-outline" slot="start" *ngIf="!task.completed" (click)="update()"></ion-icon>
-  <ion-icon name="checkmark-circle-outline" slot="start" *ngIf="task.completed" color="primary" disabled></ion-icon>
-  <ion-label>{{ task.title }}</ion-label>
-</ion-item>
-<!-- </ion-card> -->
+<div class="ion-margin task-item">
+  <ion-row class="ion-align-items-start">
+    <ion-col size="1" class="ion-no-padding">
+      <ion-icon name="ellipse-outline" class="task-check" *ngIf="!task.completed" (click)="update()"></ion-icon>
+      <ion-icon
+        name="checkmark-circle-outline"
+        class="task-check"
+        *ngIf="task.completed"
+        color="primary"
+        disabled
+      ></ion-icon>
+    </ion-col>
+
+    <ion-col size="10" class="ion-no-padding">
+      <div (click)="open()" class="task-content">
+        <div>
+          <span class="task-title">{{ task.title }}</span>
+        </div>
+
+        <div>
+          <ion-button *ngIf="task.location" size="small" fill="clean" disabled class="task-badge">
+            <ion-icon name="location-outline"></ion-icon>
+            {{ task.location }}
+          </ion-button>
+        </div>
+      </div>
+    </ion-col>
+  </ion-row>
+</div>
