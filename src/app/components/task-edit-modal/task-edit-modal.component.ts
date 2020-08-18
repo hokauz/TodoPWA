@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { Config, ModalController, NavParams } from '@ionic/angular';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { Config, ModalController, NavParams, IonInput } from '@ionic/angular';
 
 import { Task } from 'src/app/core/entity';
 import { TaskActions, TaskAction } from '../task/task.component';
@@ -10,6 +10,8 @@ import { TaskActions, TaskAction } from '../task/task.component';
   styleUrls: ['./task-edit-modal.component.scss'],
 })
 export class TaskEditModalComponent implements OnInit {
+  @ViewChild('input', { static: false }) input: IonInput;
+
   task: Task;
   ios: boolean;
   toCreate: boolean;
@@ -31,6 +33,10 @@ export class TaskEditModalComponent implements OnInit {
     } else {
       this.toCreate = true;
     }
+  }
+
+  ionViewDidEnter() {
+    setTimeout(() => this.input.setFocus(), 300);
   }
 
   save() {

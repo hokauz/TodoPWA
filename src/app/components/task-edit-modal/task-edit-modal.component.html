@@ -6,15 +6,18 @@
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
+
   <div class="container">
     <ion-item lines="none">
       <ion-input
+        #input
         [(ngModel)]="task.title"
         placeholder="Adicione uma tarefa"
         (keyup.enter)="save()"
         [readonly]="!editable"
       ></ion-input>
     </ion-item>
+
     <ion-item lines="none" *ngIf="!toCreate">
       <ion-icon
         slot="end"
