@@ -1,8 +1,8 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ModalController, IonRouterOutlet } from '@ionic/angular';
 
 import { Observable } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
 import { Task } from 'src/app/core/entity';
 
@@ -11,27 +11,29 @@ import { UtilsService } from 'src/app/services/utils/utils.service';
 
 import { TaskAction, TaskActions } from 'src/app/components/task/task.component';
 import { TaskEditModalComponent } from 'src/app/components/task-edit-modal/task-edit-modal.component';
+import { PwaService } from 'src/app/services/pwa/pwa.service';
 
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
 })
-export class HomePage implements OnInit, OnDestroy {
+export class HomePage implements OnInit {
   tasks$: Observable<Task[]>;
+  isPrepared$: Observable<boolean>;
 
   constructor(
     private service: TaskService,
     private utils: UtilsService,
     private modalCtrl: ModalController,
-    public routerOutlet: IonRouterOutlet
+    public routerOutlet: IonRouterOutlet,
+    private pwaService: PwaService
   ) {}
 
   ngOnInit() {
+    this.isPrepared$ = this.pwaService.check();
     this.read();
   }
-
-  ngOnDestroy() {}
 
   private read() {
     this.tasks$ = this.service.get().pipe(
@@ -48,9 +50,13 @@ export class HomePage implements OnInit, OnDestroy {
     this.showModal(action.task, len);
   }
 
-  private create(task: Task) {
-    this.service.create(task);
+  private async create(task: Task) {
+    const { isFirst } = await this.service.prepareCreate(task);
     this.utils.presentToast('Tarefa adicionada.');
+
+    if (isFirst) {
+      this.pwaService.tryInstall();
+    }
   }
 
   private update(task: Task) {

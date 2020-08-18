@@ -5,16 +5,19 @@ import { Task, toAPI } from '../entity';
 import { TaskRepositoryApi } from './task.repository.api';
 import { TaskRepositoryLocal } from './task.repository.local';
 import { GeolocationService } from 'src/app/services/geolocation/geolocation.service';
+import { StorageService } from 'src/app/services/storage/storage.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TaskService {
   private list = new BehaviorSubject<Task[]>([]);
+
   constructor(
     private repoAPI: TaskRepositoryApi,
     private repoLocal: TaskRepositoryLocal,
-    private geoServ: GeolocationService
+    private geoServ: GeolocationService,
+    private storageServ: StorageService
   ) {}
 
   async load() {
@@ -26,13 +29,23 @@ export class TaskService {
     return this.list.asObservable();
   }
 
-  async create(task: Task) {
-    let t = { ...task };
-    const data = await this.repoLocal.post(t);
+  async isFirst(): Promise<{ isFirst: boolean }> {
+    return this.storageServ
+      .get('isFirst')
+      .then((res) => ({ isFirst: !!res }))
+      .catch((_) => ({ isFirst: false }));
+  }
 
+  async prepareCreate(task: Task): Promise<{ isFirst: boolean }> {
+    const data = await this.repoLocal.post(task);
     this.list.next(data.list);
-    t = data.task;
+    this.create(data.task);
 
+    return await this.isFirst();
+  }
+
+  private async create(task: Task) {
+    let t = { ...task };
     t.location = await this.geoServ.getCity();
 
     await this.repoAPI.post(toAPI(t)).then(async (res) => {

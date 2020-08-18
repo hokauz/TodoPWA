@@ -7,6 +7,12 @@
     <ion-title>
       Minhas tarefas
     </ion-title>
+
+    <!-- <ion-buttons slot="end" *ngIf="isPrepared$ | async">
+      <ion-button (click)="install()">
+        <ion-icon name="star"></ion-icon>
+      </ion-button>
+    </ion-buttons> -->
   </ion-toolbar>
 </ion-header>
 
@@ -27,7 +33,7 @@
       </ng-template>
 
       <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-        <ion-fab-button size="small" (click)="add(list.length)">
+        <ion-fab-button size="small" (click)="add(list.length)" color="danger">
           <ion-icon name="add"></ion-icon>
         </ion-fab-button>
       </ion-fab>
