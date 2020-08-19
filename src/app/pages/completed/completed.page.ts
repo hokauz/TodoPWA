@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { IonRouterOutlet, ModalController } from '@ionic/angular';
 
 import { Observable, BehaviorSubject } from 'rxjs';
-import { map, tap, last, first } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 
 import { Task } from 'src/app/core/entity';
 import { TaskAction, TaskActions } from 'src/app/components/task/task.component';

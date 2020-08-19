@@ -4,7 +4,7 @@ import { Task } from '../entity';
  * Seguindo modelo de clean arquitecture
  * este contrato fornece um guia de implementação de
  * qualquer repositório, neste caso, assumimos a uma
- * api externa como fonte de dados.s
+ * api externa como fonte de dados
  *
  * @export
  * @interface TaskRepositoryContract

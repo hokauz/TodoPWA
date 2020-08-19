@@ -9,10 +9,6 @@ const routes: Routes = [
     redirectTo: 'tasks',
     pathMatch: 'full',
   },
-  // {
-  //   path: 'folder/:id',
-  //   loadChildren: () => import('./folder/folder.module').then((m) => m.FolderPageModule),
-  // },
   {
     path: 'tasks',
     component: TasksPage,

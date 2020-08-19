@@ -60,7 +60,7 @@ export interface APILocation {
 export class GeolocationService {
   constructor(private http: HttpClient) {}
 
-  async getLocation(): Promise<Position | PositionError> {
+  private async getLocation(): Promise<Position | PositionError> {
     if (!navigator.geolocation) {
       return;
     }
@@ -97,7 +97,7 @@ export class GeolocationService {
     );
   }
 
-  async getCityFromGoogle(lat: number, lng: number, key: string) {
+  private async getCityFromGoogle(lat: number, lng: number, key: string) {
     const path = `https://maps.googleapis.com/maps/api/geocode/json?&key=${key}&language=pt_BR&latlng=${lat},${lng}`;
     return this.http
       .get(path)
@@ -110,7 +110,7 @@ export class GeolocationService {
       });
   }
 
-  async getCityFromAPI(): Promise<string> {
+  private async getCityFromAPI(): Promise<string> {
     const path = 'https://geolocation-db.com/json/';
     return this.http
       .get<any>(path)
@@ -122,7 +122,7 @@ export class GeolocationService {
       });
   }
 
-  fromMap(res: any): AddressGoogleAPI {
+  private fromMap(res: any): AddressGoogleAPI {
     let address = new AddressGoogleAPI();
     if (res['status'] != 'OK') {
       return address;

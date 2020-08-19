@@ -24,7 +24,7 @@ export class PushService {
   }
 
   send(title: string, msg: string) {
-    if (this.swUpdate.isEnabled && 'Notification' in window) {
+    if (this.swUpdate.isEnabled) {
       const options: NotificationOptions = { body: msg, icon: 'assets/icons/icon-72x72.png' };
 
       navigator.serviceWorker.ready

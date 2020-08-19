@@ -37,7 +37,7 @@ import { environment } from '../environments/environment';
       storeName: 'tasks',
       driverOrder: ['indexeddb', 'websql'],
     }),
-    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
+    ServiceWorkerModule.register('sw.js', { enabled: environment.production }),
   ],
   providers: [StatusBar, SplashScreen, { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
   bootstrap: [AppComponent],

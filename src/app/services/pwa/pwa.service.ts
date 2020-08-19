@@ -1,4 +1,4 @@
-import { Injectable, ApplicationRef } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -10,7 +10,7 @@ import { SwUpdate } from '@angular/service-worker';
 export class PwaService {
   private deferred = new BehaviorSubject<any>(undefined);
 
-  constructor(private updates: SwUpdate, private appRef: ApplicationRef) {
+  constructor(private updates: SwUpdate) {
     this.prepareToInstall();
   }
 
@@ -64,13 +64,4 @@ export class PwaService {
       })
     );
   }
-
-  // checkForUpdates() {
-  //   if (this.updates.isEnabled) {
-  //     const appIsStable$ = this.appRef.isStable.pipe(first((isStable) => isStable === true));
-  //     const everySixHours$ = interval(6 * 60 * 60 * 1000);
-  //     const everySixHoursOnceAppIsStable$ = concat(appIsStable$, everySixHours$);
-  //     everySixHoursOnceAppIsStable$.subscribe(() => this.updates.checkForUpdate());
-  //   }
-  // }
 }
