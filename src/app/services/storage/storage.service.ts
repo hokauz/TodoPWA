@@ -25,7 +25,9 @@ export class StorageService {
   }
 
   async getAll<T>(): Promise<T[]> {
-    const t = await this.storage.keys().then((l) => l.map((key) => this.storage.get(key)));
+    const t = await this.storage
+      .keys()
+      .then((l) => l.filter((key) => key.includes('task-')).map((key) => this.storage.get(key)));
     return Promise.all(t);
   }
 

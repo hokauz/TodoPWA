@@ -36,7 +36,7 @@ export class TaskRepositoryLocal {
   }
 
   async post(task: Task): Promise<TaskLocalResponse> {
-    const t = { ...task, id: uuidv4() };
+    const t = { ...task, id: `task-${uuidv4()}` };
     this.list.push(t);
     this.storage.set(t.id, t);
     return { list: this.list, task: t };

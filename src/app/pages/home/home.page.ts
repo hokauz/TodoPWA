@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController, IonRouterOutlet } from '@ionic/angular';
 
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, BehaviorSubject } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
 
 import { Task } from 'src/app/core/entity';
 
@@ -12,6 +12,7 @@ import { UtilsService } from 'src/app/services/utils/utils.service';
 import { TaskAction, TaskActions } from 'src/app/components/task/task.component';
 import { TaskEditModalComponent } from 'src/app/components/task-edit-modal/task-edit-modal.component';
 import { PwaService } from 'src/app/services/pwa/pwa.service';
+import { PushService } from 'src/app/services/push/push.service';
 
 @Component({
   selector: 'app-home',
@@ -19,6 +20,9 @@ import { PwaService } from 'src/app/services/pwa/pwa.service';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage implements OnInit {
+  isFirst: boolean;
+
+  size$: BehaviorSubject<number>;
   tasks$: Observable<Task[]>;
   isPrepared$: Observable<boolean>;
 
@@ -27,18 +31,29 @@ export class HomePage implements OnInit {
     private utils: UtilsService,
     private modalCtrl: ModalController,
     public routerOutlet: IonRouterOutlet,
-    private pwaService: PwaService
+    private pwaServ: PwaService,
+    private pushServ: PushService
   ) {}
 
   ngOnInit() {
-    this.isPrepared$ = this.pwaService.isInstalable();
+    this.size$ = new BehaviorSubject(0);
+    this.isPrepared$ = this.pwaServ.isInstalable();
+
+    this.pushServ.requestPermission();
+    this.checkFirst();
     this.read();
+  }
+
+  async checkFirst() {
+    const { isFirst } = await this.service.isFirst();
+    console.log(isFirst);
+    this.isFirst = isFirst;
   }
 
   private read() {
     this.tasks$ = this.service.get().pipe(
-      map((list) => list.filter((l) => !l.completed))
-      // tap(console.log)
+      map((list) => list.filter((l) => !l.completed)),
+      tap((list) => this.size$.next(list.length))
     );
   }
 
@@ -52,11 +67,14 @@ export class HomePage implements OnInit {
 
   private async create(task: Task) {
     const { isFirst } = await this.service.create(task);
-    // this.utils.presentToast('Tarefa adicionada.');
 
     if (isFirst) {
-      this.pwaService.tryInstall();
+      this.pwaServ.tryInstall();
+      this.pushServ.requestPermission();
+      return;
     }
+
+    this.isFirst = false;
   }
 
   private update(task: Task) {

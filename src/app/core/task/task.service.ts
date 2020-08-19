@@ -4,9 +4,10 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { Task, toAPI } from '../entity';
 import { TaskRepositoryApi } from './task.repository.api';
 import { TaskRepositoryLocal } from './task.repository.local';
+import { TaskRoutineService } from './task.routine.sync';
 
 import { GeolocationService } from 'src/app/services/geolocation/geolocation.service';
-import { TaskRoutineService } from './task.routine.sync';
+import { PushService } from 'src/app/services/push/push.service';
 
 @Injectable({
   providedIn: 'root',
@@ -18,7 +19,8 @@ export class TaskService {
     private repoAPI: TaskRepositoryApi,
     private repoLocal: TaskRepositoryLocal,
     private geoServ: GeolocationService,
-    private routineServ: TaskRoutineService
+    private routineServ: TaskRoutineService,
+    private pushServ: PushService
   ) {
     this.routineServ.listener();
   }
@@ -32,9 +34,10 @@ export class TaskService {
     return this.list.asObservable();
   }
 
-  private async isFirst(): Promise<{ isFirst: boolean }> {
+  async isFirst(): Promise<{ isFirst: boolean }> {
     const check = localStorage.getItem('isFirst');
-    const isFirst = (check !== null && check !== undefined && check !== 'false') || check === 'true';
+    console.log(check);
+    const isFirst = check === null || check === undefined || check === 'true';
     return { isFirst };
   }
 
@@ -83,6 +86,18 @@ export class TaskService {
       : task;
   }
 
+  private checkTaskCompletePush(task: Task) {
+    if (task.completed) {
+      this.pushServ.send('Task completada', task.title);
+    }
+    return task;
+  }
+
+  private sendDeletePush(task: Task) {
+    this.pushServ.send('Task removida', task.title);
+    return task;
+  }
+
   async create(task: Task) {
     this.repoLocal
       .post(task)
@@ -104,6 +119,7 @@ export class TaskService {
     return this.repoLocal
       .put(taskPreUpdate)
       .then((data) => this.updateList(data.list, data.task))
+      .then((t) => this.checkTaskCompletePush(t))
       .then((t) => this.prepareUpdateAPI(t))
       .then((t) => this.repoLocal.put(t))
       .then((data) => this.updateList(data.list, data.task));
@@ -115,6 +131,7 @@ export class TaskService {
     return this.repoLocal
       .put(taskPreDelete)
       .then((data) => this.updateList(data.list, data.task))
+      .then((t) => this.sendDeletePush(t))
       .then((t) => this.prepareToDeleteAPI(t))
       .then((t) => this.prepareToDeleteLocal(t));
   }

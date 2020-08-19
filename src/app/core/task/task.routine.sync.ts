@@ -61,7 +61,7 @@ export class TaskRoutineService {
             return;
           })
           .catch((e) => {
-            console.log('Task', task.id, task.url, e);
+            console.log(`Task create error`, task.id, task.url, e);
           })
       );
 
@@ -80,7 +80,7 @@ export class TaskRoutineService {
             return;
           })
           .catch((e) => {
-            console.log('Task', task.id, task.url, e);
+            console.log('Task update error', task.id, task.url, e);
           })
       );
 
@@ -99,7 +99,7 @@ export class TaskRoutineService {
             return;
           })
           .catch((e) => {
-            console.log('Task', task.id, task.url, e);
+            console.log('Task delete error', task.id, task.url, e);
           })
       );
 

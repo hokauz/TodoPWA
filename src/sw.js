@@ -6,3 +6,4 @@ importScripts('./ngsw-worker.js');
 // });
 
 // workbox.routing.registerRoute('https://todo-backend-golang.herokuapp.com/todos', networkWithBackgroundSync, 'POST');
+// workbox.routing.registerRoute('https://todo-backend-golang.herokuapp.com/todos', networkWithBackgroundSync, 'PATCH');

@@ -4,6 +4,7 @@
 
 export const environment = {
   production: false,
+  api_url: 'https://todo-backend-golang.herokuapp.com/todos',
 };
 
 /*

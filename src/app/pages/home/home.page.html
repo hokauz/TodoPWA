@@ -29,14 +29,27 @@
       </div>
 
       <ng-template #empty>
-        <p>Vazio</p>
-      </ng-template>
+        <div class="empty-list-box" *ngIf="!isFirst">
+          <img src="assets/congrats.svg" alt="" class="empty-list" />
+          <p class="ion-text-center">
+            Parabêns! <br />
+            Você completou todas as suas tarefas
+          </p>
+          <ion-button fill="outline" color="primary">Vamos criar mais uma?</ion-button>
+        </div>
 
-      <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-        <ion-fab-button size="small" (click)="add(list.length)" color="danger">
-          <ion-icon name="add"></ion-icon>
-        </ion-fab-button>
-      </ion-fab>
+        <div class="empty-list-box" *ngIf="isFirst">
+          <img src="assets/welcome.svg" alt="" class="empty-list" />
+          <p class="ion-text-center">Oiiii! <br /></p>
+          <ion-button fill="outline" color="primary">Vamos criar sua primeira tarefa?</ion-button>
+        </div>
+      </ng-template>
     </ng-container>
   </div>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="size$ | async as size">
+    <ion-fab-button size="small" (click)="add(size)" color="danger">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>
