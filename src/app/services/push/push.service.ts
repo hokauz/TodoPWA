@@ -14,7 +14,7 @@ export class PushService {
     }
 
     if (Notification.permission !== 'denied') {
-      Notification.requestPermission()
+      Promise.resolve(Notification.requestPermission())
         .then((permission) => {
           console.log('[Request permission]', permission);
           return permission;
@@ -24,12 +24,14 @@ export class PushService {
   }
 
   send(title: string, msg: string) {
-    if (this.swUpdate.isEnabled) {
+    if (this.swUpdate.isEnabled && 'Notification' in window) {
       const options: NotificationOptions = { body: msg, icon: 'assets/icons/icon-72x72.png' };
 
-      navigator.serviceWorker.ready.then((registration) => {
-        registration.showNotification(title, options);
-      });
+      navigator.serviceWorker.ready
+        .then((registration) => {
+          registration.showNotification(title, options);
+        })
+        .catch((e) => console.log('[Show Notification error]', e));
     }
   }
 }
