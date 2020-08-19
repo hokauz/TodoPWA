@@ -20,6 +20,7 @@ export class TaskAction {
 })
 export class TaskComponent implements OnInit {
   @Input('task') task: Task;
+  @Input('loading') loading: boolean = false;
   @Output('action') action = new EventEmitter<TaskAction>();
   @Output('view') view = new EventEmitter<TaskAction>();
 

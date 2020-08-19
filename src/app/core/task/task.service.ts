@@ -36,7 +36,6 @@ export class TaskService {
 
   async isFirst(): Promise<{ isFirst: boolean }> {
     const check = localStorage.getItem('isFirst');
-    console.log(check);
     const isFirst = check === null || check === undefined || check === 'true';
     return { isFirst };
   }

@@ -24,7 +24,7 @@ export class HomePage implements OnInit {
 
   size$: BehaviorSubject<number>;
   tasks$: Observable<Task[]>;
-  isPrepared$: Observable<boolean>;
+  loaded$: BehaviorSubject<boolean>;
 
   constructor(
     private service: TaskService,
@@ -37,7 +37,7 @@ export class HomePage implements OnInit {
 
   ngOnInit() {
     this.size$ = new BehaviorSubject(0);
-    this.isPrepared$ = this.pwaServ.isInstalable();
+    this.loaded$ = new BehaviorSubject(false);
 
     this.pushServ.requestPermission();
     this.checkFirst();
@@ -46,14 +46,18 @@ export class HomePage implements OnInit {
 
   async checkFirst() {
     const { isFirst } = await this.service.isFirst();
-    console.log(isFirst);
     this.isFirst = isFirst;
   }
 
   private read() {
+    // console.log('read');
     this.tasks$ = this.service.get().pipe(
+      // tap(() => this.loaded$.next(false)),
+      // tap(() => console.log('loaded in', this.loaded$.value)),
       map((list) => list.filter((l) => !l.completed)),
       tap((list) => this.size$.next(list.length))
+      // tap(() => this.loaded$.next(true)),
+      // tap(() => console.log('loaded out', this.loaded$.value))
     );
   }
 
