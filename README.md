@@ -11,7 +11,7 @@ Para demonstração foi usado o firebase hosting por possuir https default.
 ### Recursos
 
 1. CRUD TODO
-2. Utilização offlinse
+2. Utilização offline
 3. Sincronização de dados com rede disponível
 4. Resgate de localização (cidade) via api
 5. Push notification
