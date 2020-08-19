@@ -4,23 +4,22 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
 
-    <ion-title>
-      Minhas tarefas
-    </ion-title>
+    <ion-title>Tasks</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <div class="container">
-    <!-- <ng-container *ngIf="loaded$ | async; else loading"> -->
+  <ion-header collapse="condense" *ngIf="(tasks$ | async).length">
+    <ion-toolbar>
+      <ion-title size="large">Tasks</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <div id="container">
     <ng-container *ngIf="tasks$ | async as list">
       <div *ngIf="list && list.length; else empty">
-        <task
-          *ngFor="let task of list"
-          [task]="task"
-          (action)="handlerAction($event)"
-          (view)="view($event, list.length)"
-        ></task>
+        <task *ngFor="let task of list" [task]="task" (action)="handlerAction($event)"
+          (view)="view($event, list.length)"></task>
       </div>
 
       <ng-template #empty>
@@ -37,9 +36,8 @@
           <div class="empty-list-box" *ngIf="isFirst">
             <img src="assets/welcome.svg" alt="" class="empty-list" />
             <p class="ion-text-center">Oiiii! <br /></p>
-            <ion-button fill="outline" color="primary" (click)="add(list.length)"
-              >Vamos criar sua primeira tarefa?</ion-button
-            >
+            <ion-button fill="outline" color="primary" (click)="add(list.length)">Vamos criar sua primeira tarefa?
+            </ion-button>
           </div>
         </ng-container>
 
@@ -51,7 +49,7 @@
   </div>
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="size$ | async as size">
-    <ion-fab-button size="small" (click)="add(size)" color="danger">
+    <ion-fab-button size="small" (click)="add(size)">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
   </ion-fab>

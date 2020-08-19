@@ -4,30 +4,41 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
 
-    <ion-title>
-      Terefas completadas
-    </ion-title>
+    <ion-title>Completadas</ion-title>
 
-    <ion-buttons slot="end" *ngIf="hasContent">
-      <ion-button (click)="clear()" strong>
-        Limpar
+    <ion-buttons slot="end" *ngIf="(tasks$ | async).length">
+      <ion-button (click)="clear()">
+        <ion-icon name="trash"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
+  <ion-header collapse="condense" *ngIf="(tasks$ | async).length">
+    <ion-toolbar>
+      <ion-title size="large">Completadas</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
   <div class="container">
     <ng-container *ngIf="tasks$ | async as list">
       <div *ngIf="list && list.length; else empty">
-        <task *ngFor="let task of list" [task]="task" (view)="view($event, list.length)"></task>
+        <task *ngFor="let task of list" [task]="task" (action)="handlerAction($event)"
+          (view)="view($event, list.length)"></task>
       </div>
 
       <ng-template #empty>
-        <div class="empty-list-box">
-          <img src="assets/empty.svg" alt="" class="empty-list" />
-          <p>Todo limpo por aqui!</p>
-        </div>
+        <ng-container *ngIf="loaded$ | async; else loading">
+          <div class="empty-list-box">
+            <img src="assets/empty.svg" alt="" class="empty-list" />
+            <p>Todo limpo por aqui!</p>
+          </div>
+        </ng-container>
+
+        <ng-template #loading>
+          <task *ngFor="let task of [1,2,3,4,5]" loading="true"></task>
+        </ng-template>
       </ng-template>
     </ng-container>
   </div>

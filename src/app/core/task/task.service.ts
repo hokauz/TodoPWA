@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, Subject, BehaviorSubject } from 'rxjs';
 
 import { Task, toAPI } from '../entity';
 import { TaskRepositoryApi } from './task.repository.api';

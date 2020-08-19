@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import { Platform } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
@@ -16,16 +16,25 @@ import { SubSink } from 'subsink';
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.scss'],
 })
-export class AppComponent implements OnDestroy {
-  dark = false;
-
-  private subs$ = new SubSink();
+export class AppComponent implements OnInit {
+  public selectedIndex = 0;
+  public appPages = [
+    {
+      title: 'Tasks',
+      url: '/tasks',
+      icon: 'mail',
+    },
+    {
+      title: 'Completadas',
+      url: '/completed',
+      icon: 'paper-plane',
+    },
+  ];
 
   constructor(
     private platform: Platform,
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
-
     private service: TaskService,
     private networkServ: NetworkService,
     private pwaServ: PwaService,
@@ -33,10 +42,7 @@ export class AppComponent implements OnDestroy {
   ) {
     this.initializeApp();
   }
-
-  ngOnDestroy() {
-    this.subs$.unsubscribe();
-  }
+  private subs$ = new SubSink();
 
   initializeApp() {
     this.platform.ready().then(() => {
@@ -48,6 +54,17 @@ export class AppComponent implements OnDestroy {
       this.networkServ.listener();
       this.service.load();
     });
+  }
+
+  ngOnInit() {
+    const path = window.location.pathname.split('folder/')[1];
+    if (path !== undefined) {
+      this.selectedIndex = this.appPages.findIndex((page) => page.title.toLowerCase() === path.toLowerCase());
+    }
+  }
+
+  ngOnDestroy() {
+    this.subs$.unsubscribe();
   }
 
   private checkForUpdaes() {

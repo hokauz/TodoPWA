@@ -8,27 +8,29 @@ import { Task } from 'src/app/core/entity';
 
 import { TaskService } from 'src/app/core/task/task.service';
 import { UtilsService } from 'src/app/services/utils/utils.service';
+import { PushService } from 'src/app/services/push/push.service';
+import { PwaService } from 'src/app/services/pwa/pwa.service';
 
 import { TaskAction, TaskActions } from 'src/app/components/task/task.component';
 import { TaskEditModalComponent } from 'src/app/components/task-edit-modal/task-edit-modal.component';
-import { PwaService } from 'src/app/services/pwa/pwa.service';
-import { PushService } from 'src/app/services/push/push.service';
 
 @Component({
-  selector: 'app-home',
-  templateUrl: 'home.page.html',
-  styleUrls: ['home.page.scss'],
+  selector: 'app-tasks',
+  templateUrl: './tasks.page.html',
+  styleUrls: ['./tasks.page.scss'],
 })
-export class HomePage implements OnInit {
+export class TasksPage implements OnInit {
   isFirst: boolean;
+  showSearch: boolean;
 
-  size$: BehaviorSubject<number>;
   tasks$: Observable<Task[]>;
-  loaded$: BehaviorSubject<boolean>;
+
+  size$ = new BehaviorSubject(0);
+  loaded$ = new BehaviorSubject(false);
 
   constructor(
-    private service: TaskService,
     private utils: UtilsService,
+    private service: TaskService,
     private modalCtrl: ModalController,
     public routerOutlet: IonRouterOutlet,
     private pwaServ: PwaService,
@@ -36,9 +38,9 @@ export class HomePage implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.showSearch = false;
     this.size$ = new BehaviorSubject(0);
     this.loaded$ = new BehaviorSubject(false);
-
     this.pushServ.requestPermission();
     this.checkFirst();
     this.read();
@@ -50,14 +52,11 @@ export class HomePage implements OnInit {
   }
 
   private read() {
-    // console.log('read');
     this.tasks$ = this.service.get().pipe(
-      // tap(() => this.loaded$.next(false)),
-      // tap(() => console.log('loaded in', this.loaded$.value)),
+      tap(() => this.loaded$.next(false)),
       map((list) => list.filter((l) => !l.completed)),
-      tap((list) => this.size$.next(list.length))
-      // tap(() => this.loaded$.next(true)),
-      // tap(() => console.log('loaded out', this.loaded$.value))
+      tap((list) => this.size$.next(list.length)),
+      tap(() => this.loaded$.next(true))
     );
   }
 
@@ -119,5 +118,9 @@ export class HomePage implements OnInit {
     if (data) {
       this.handlerAction(data);
     }
+  }
+
+  toggleSearchBar() {
+    this.showSearch = !this.showSearch;
   }
 }

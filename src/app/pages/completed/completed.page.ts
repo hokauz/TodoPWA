@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { IonRouterOutlet, ModalController } from '@ionic/angular';
 
-import { Observable } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { Observable, BehaviorSubject } from 'rxjs';
+import { map, tap, last, first } from 'rxjs/operators';
 
 import { Task } from 'src/app/core/entity';
 import { TaskAction, TaskActions } from 'src/app/components/task/task.component';
@@ -18,6 +18,8 @@ import { TaskEditModalComponent } from 'src/app/components/task-edit-modal/task-
 })
 export class CompletedPage implements OnInit {
   tasks$: Observable<Task[]>;
+  loaded$: BehaviorSubject<boolean>;
+
   hasContent: boolean;
   constructor(
     private service: TaskService,
@@ -27,6 +29,7 @@ export class CompletedPage implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.loaded$ = new BehaviorSubject(false);
     this.read();
   }
 
@@ -34,8 +37,10 @@ export class CompletedPage implements OnInit {
 
   private read() {
     this.tasks$ = this.service.get().pipe(
+      tap(() => this.loaded$.next(false)),
       map((list) => list.filter((l) => l.completed)),
-      tap((list) => (this.hasContent = !!list.length))
+      tap((list) => (this.hasContent = !!list.length)),
+      tap(() => this.loaded$.next(true))
     );
   }
 

@@ -1,19 +1,25 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { TasksPage } from './pages/tasks/tasks.page';
+import { CompletedPage } from './pages/completed/completed.page';
 
 const routes: Routes = [
   {
-    path: 'home',
-    loadChildren: () => import('./pages/home/home.module').then((m) => m.HomePageModule),
+    path: '',
+    redirectTo: 'tasks',
+    pathMatch: 'full',
+  },
+  // {
+  //   path: 'folder/:id',
+  //   loadChildren: () => import('./folder/folder.module').then((m) => m.FolderPageModule),
+  // },
+  {
+    path: 'tasks',
+    component: TasksPage,
   },
   {
     path: 'completed',
-    loadChildren: () => import('./pages/completed/completed.module').then((m) => m.CompletedPageModule),
-  },
-  {
-    path: '',
-    redirectTo: 'home',
-    pathMatch: 'full',
+    component: CompletedPage,
   },
 ];
 
