@@ -15,44 +15,46 @@ export interface TaskLocalResponse {
 })
 export class TaskRepositoryLocal {
   private list: Task[];
-  private key = 'tasks';
 
   constructor(private storage: StorageService) {}
 
-  set(tasks: Task[]) {
+  async set(task: Task) {
+    this.list.push(task);
+    await this.storage.set(task.id, task);
+    return { list: this.list, task: task };
+  }
+
+  async setList(tasks: Task[]) {
     this.list = tasks;
-    this.save();
+    await this.storage.setList(tasks, 'id');
   }
 
   async get(): Promise<Task[]> {
-    this.list = (await this.storage.get<Task[]>(this.key)) || [];
+    this.storage.getAll();
+    this.list = (await this.storage.getAll<Task>()) || [];
     return this.list;
   }
 
   async post(task: Task): Promise<TaskLocalResponse> {
     const t = { ...task, id: uuidv4() };
     this.list.push(t);
-    this.save();
+    this.storage.set(t.id, t);
     return { list: this.list, task: t };
   }
 
-  async put(task: Task): Promise<Task[]> {
+  async put(task: Task): Promise<TaskLocalResponse> {
     const i = this.list.findIndex((t) => t.id === task.id);
 
     if (i !== null && i !== undefined) {
       this.list[i] = { ...this.list[i], ...task };
-      this.save();
+      this.storage.update(task.id, task);
     }
-    return this.list;
+    return { list: this.list, task: task };
   }
 
-  async delete(target: string): Promise<Task[]> {
+  async delete(target: string): Promise<TaskLocalResponse> {
     this.list = this.list.filter((t) => t.id !== target);
-    this.save();
-    return this.list;
-  }
-
-  private save() {
-    this.storage.set(this.key, this.list);
+    this.storage.remove(target);
+    return { list: this.list, task: undefined };
   }
 }

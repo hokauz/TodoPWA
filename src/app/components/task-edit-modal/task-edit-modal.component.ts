@@ -40,6 +40,11 @@ export class TaskEditModalComponent implements OnInit {
   }
 
   save() {
+    if (!this.task.title) {
+      this.dismiss();
+      return;
+    }
+
     const act = this.toCreate ? TaskActions.CREATE : TaskActions.UPDATE;
     this.dismiss(new TaskAction(act, this.task));
   }

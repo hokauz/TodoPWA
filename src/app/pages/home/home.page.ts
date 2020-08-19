@@ -31,7 +31,7 @@ export class HomePage implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.isPrepared$ = this.pwaService.check();
+    this.isPrepared$ = this.pwaService.isInstalable();
     this.read();
   }
 
@@ -51,8 +51,8 @@ export class HomePage implements OnInit {
   }
 
   private async create(task: Task) {
-    const { isFirst } = await this.service.prepareCreate(task);
-    this.utils.presentToast('Tarefa adicionada.');
+    const { isFirst } = await this.service.create(task);
+    // this.utils.presentToast('Tarefa adicionada.');
 
     if (isFirst) {
       this.pwaService.tryInstall();

@@ -27,11 +27,16 @@ export class Task {
   url?: string;
   text?: string;
   location?: string;
+  _synced?: boolean;
+  _deleted?: boolean;
 
   constructor(title: string, order: number, completed: boolean = false) {
     this.title = title || '';
     this.order = order;
     this.completed = completed;
+    this._synced = false;
+    this._deleted = false;
+    this.text = new Date().toISOString();
   }
 }
 
